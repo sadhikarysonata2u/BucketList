@@ -22,6 +22,6 @@ jobs:
         run: |
           # Build and test using the Xcode project
           xcodebuild clean build test \
-            -project GitActionCheck.xcodeproj \
-            -scheme GitActionCheck \
+            -project BucketList.xcodeproj \
+            -scheme BucketList \
             -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.6'
