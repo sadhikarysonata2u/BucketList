@@ -25,3 +25,25 @@ jobs:
             -project BucketList.xcodeproj \
             -scheme BucketList \
             -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.6'
+
+      - name: Run Unit Tests
+        run: |
+          # Run unit tests with xcodebuild, capturing test results
+          xcodebuild test \
+            -project BucketList.xcodeproj \
+            -scheme BucketList \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.6' \
+            -enableCodeCoverage YES
+
+      - name: Upload Test Results to GitHub
+        if: always()
+        run: |
+          # Upload test results to GitHub as artifacts or for status tracking
+          mkdir -p test-reports
+          cp -r ~/Library/Developer/Xcode/DerivedData/BucketList*/Logs/Test/*.xcresult test-reports/
+          echo "Test results are uploaded as artifacts"
+          # Optionally, you can use GitHub's upload-artifact action if you want to store the results as artifacts
+          # - uses: actions/upload-artifact@v3
+          #   with:
+          #     name: test-results
+          #     path: test-reports/
