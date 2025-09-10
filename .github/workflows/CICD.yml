@@ -29,7 +29,7 @@ jobs:
       - name: Run Unit Tests
         run: |
           # Run unit tests with xcodebuild, capturing test results
-          xcodebuild clean build test \
+          xcodebuild test \
             -project BucketList.xcodeproj \
             -scheme BucketList \
             -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.6' \
