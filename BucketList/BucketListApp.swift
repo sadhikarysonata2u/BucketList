@@ -34,23 +34,56 @@ import SwiftData
 import SwiftUI
 import SwiftData
 
+//@main
+//struct TaskApp: App {
+//    var body: some Scene {
+//        WindowGroup {
+//            TasksView()
+//        }
+//        .modelContainer(TaskItem.container)
+//    }
+//}
+//
+//extension TaskItem {
+//    static var container: ModelContainer {
+//        let schema = Schema([TaskItem.self])
+//        let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+//        
+//        do {
+//            return try ModelContainer(for: schema, configurations: [configuration])
+//        } catch {
+//            fatalError("Could not create ModelContainer: \(error)")
+//        }
+//    }
+//}
+
 @main
 struct TaskApp: App {
+    private let persistenceController = PersistenceController()
+    
     var body: some Scene {
         WindowGroup {
-            TasksView()
+            let repository = SwiftDataTaskRepository(
+                context: persistenceController.container.mainContext
+            )
+            let viewModel = TaskViewModel(repository: repository)
+            TasksView(viewModel: viewModel)
         }
-        .modelContainer(TaskItem.container)
+        .modelContainer(persistenceController.container)
     }
 }
 
-extension TaskItem {
-    static var container: ModelContainer {
-        let schema = Schema([TaskItem.self])
-        let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+
+
+struct PersistenceController {
+    let container: ModelContainer
+    
+    init(models: [any PersistentModel.Type] = [TaskItem.self], inMemory: Bool = false) {
+        let schema = Schema(models)
+        let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: inMemory)
         
         do {
-            return try ModelContainer(for: schema, configurations: [configuration])
+            container = try ModelContainer(for: schema, configurations: [configuration])
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }

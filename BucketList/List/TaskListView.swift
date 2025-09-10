@@ -9,18 +9,16 @@ import SwiftUI
 import SwiftData
 
 struct TasksView: View {
-    @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel: TaskViewModel
     
-    init() {
-        let modelContext = ModelContext(TaskItem.container)
-        _viewModel = StateObject(wrappedValue: TaskViewModel(modelContext: modelContext))
+    init(viewModel: TaskViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
         NavigationStack {
             VStack {
-                // Filter and Sort Controls
+                // Filter & Sort Controls
                 HStack {
                     Picker("Filter", selection: $viewModel.filterOption) {
                         ForEach(TaskViewModel.FilterOption.allCases, id: \.self) { option in
@@ -37,7 +35,7 @@ struct TasksView: View {
                         }
                     }
                     .pickerStyle(.menu)
-                    .onChange(of: viewModel.sortOption) { _,_ in
+                    .onChange(of: viewModel.sortOption) { _, _ in
                         viewModel.sortTasks()
                     }
                 }
@@ -66,9 +64,6 @@ struct TasksView: View {
                         Image(systemName: "plus")
                     }
                 }
-//#elseif os(macOS)
-                
-                
 #endif
             }
             .sheet(isPresented: $viewModel.showAddTask) {
@@ -116,9 +111,25 @@ struct TaskRowView: View {
 
 
 
+private struct MockTaskRepository_Preview: TaskRepositoryProtocol {
+    private var sampleTasks: [TaskItem] = [
+        TaskItem(title: "Buy groceries", dueDate: .now, priority: .high),
+        TaskItem(title: "Walk the dog", dueDate: .now.addingTimeInterval(3600), priority: .medium),
+        TaskItem(title: "Finish report", dueDate: nil, priority: .low)
+    ]
+    
+    func fetchTasks() -> [TaskItem] { sampleTasks }
+    func addTask(_ task: TaskItem) {}
+    func updateTask(_ task: TaskItem) {}
+    func deleteTask(_ task: TaskItem) {}
+}
 
 
 
-#Preview {
-    TasksView()
+struct TasksView_Previews: PreviewProvider {
+    static var previews: some View {
+        let mockRepository = MockTaskRepository_Preview()
+        let viewModel = TaskViewModel(repository: mockRepository)
+        TasksView(viewModel: viewModel)
+    }
 }

@@ -5,7 +5,6 @@
 //  Created by SUJOY on 05/09/25.
 //
 
-import SwiftData
 import Foundation
 
 @MainActor
@@ -18,7 +17,7 @@ class TaskViewModel: ObservableObject {
     @Published var sortOption: SortOption = .createdDate
     @Published var filterOption: FilterOption = .all
     
-    private let modelContext: ModelContext
+    private let repository: TaskRepositoryProtocol
     
     enum SortOption: String, CaseIterable {
         case createdDate = "Created Date"
@@ -34,19 +33,14 @@ class TaskViewModel: ObservableObject {
         case highPriority = "High Priority"
     }
     
-    init(modelContext: ModelContext) {
-        self.modelContext = modelContext
+    init(repository: TaskRepositoryProtocol) {
+        self.repository = repository
         fetchTasks()
     }
     
     func fetchTasks() {
-        let descriptor = FetchDescriptor<TaskItem>()
-        do {
-            tasks = try modelContext.fetch(descriptor)
-            sortTasks()
-        } catch {
-            print("Failed to fetch tasks: \(error)")
-        }
+        tasks = repository.fetchTasks()
+        sortTasks()
     }
     
     func addTask() {
@@ -58,33 +52,29 @@ class TaskViewModel: ObservableObject {
             priority: newTaskPriority
         )
         
-        modelContext.insert(task)
-        
-        do {
-            try modelContext.save()
-            fetchTasks()
-            resetForm()
-            showAddTask = false
-        } catch {
-            print("Failed to save task: \(error)")
-        }
+        repository.addTask(task)
+        fetchTasks()
+        resetForm()
+        showAddTask = false
     }
     
     func toggleTaskCompletion(_ task: TaskItem) {
         task.isCompleted.toggle()
-        saveContext()
+        repository.updateTask(task)
+        fetchTasks()
     }
     
     func deleteTask(_ task: TaskItem) {
-        modelContext.delete(task)
-        saveContext()
+        repository.deleteTask(task)
+        fetchTasks()
     }
     
     func updateTask(_ task: TaskItem, title: String, dueDate: Date?, priority: TaskItem.Priority) {
         task.title = title
         task.dueDate = dueDate
         task.priority = priority
-        saveContext()
+        repository.updateTask(task)
+        fetchTasks()
     }
     
     func sortTasks() {
@@ -116,18 +106,10 @@ class TaskViewModel: ObservableObject {
         }
     }
     
-    private func saveContext() {
-        do {
-            try modelContext.save()
-            fetchTasks()
-        } catch {
-            print("Failed to save context: \(error)")
-        }
-    }
-    
     private func resetForm() {
         newTaskTitle = ""
         newTaskDueDate = Date()
         newTaskPriority = .medium
     }
 }
+
