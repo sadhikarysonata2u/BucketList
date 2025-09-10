@@ -27,6 +27,7 @@
 		32C84F292E6B2B69005D8E92 /* BucketList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BucketList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32C84F392E6B2B6A005D8E92 /* BucketListTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BucketListTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		32C84F432E6B2B6A005D8E92 /* BucketListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BucketListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		32F8A7A52E7172180029229D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +76,7 @@
 		32C84F202E6B2B69005D8E92 = {
 			isa = PBXGroup;
 			children = (
+				32F8A7A52E7172180029229D /* README.md */,
 				32C84F2B2E6B2B69005D8E92 /* BucketList */,
 				32C84F3C2E6B2B6A005D8E92 /* BucketListTests */,
 				32C84F462E6B2B6A005D8E92 /* BucketListUITests */,
